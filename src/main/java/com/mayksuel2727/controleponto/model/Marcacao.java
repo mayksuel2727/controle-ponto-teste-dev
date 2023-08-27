@@ -3,10 +3,10 @@ package com.mayksuel2727.controleponto.model;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-public class HorarioTrabalho implements Serializable {
+public class Marcacao implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long idTurno;
+    private Long id;
     @Size(max = 5)
     private String entrada;
 
@@ -14,12 +14,12 @@ public class HorarioTrabalho implements Serializable {
     private String saida;
 
 
-    public Long getIdTurno() {
-        return idTurno;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdTurno(Long idTurno) {
-        this.idTurno = idTurno;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEntrada() {

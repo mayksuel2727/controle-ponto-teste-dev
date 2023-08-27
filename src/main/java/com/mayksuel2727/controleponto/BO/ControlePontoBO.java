@@ -1,7 +1,7 @@
 package com.mayksuel2727.controleponto.BO;
 
 import com.mayksuel2727.controleponto.HBDAO.ControlePontoHBDAO;
-import com.mayksuel2727.controleponto.model.HorarioTrabalho;
+import com.mayksuel2727.controleponto.model.Marcacao;
 
 import javax.ejb.Stateless;
 import java.io.Serializable;
@@ -9,10 +9,27 @@ import java.io.Serializable;
 @Stateless
 public class ControlePontoBO implements Serializable{
     private static final long serialVersionUID = 1L;
+    ControlePontoHBDAO controlePontoHBDAO = new ControlePontoHBDAO();
 
-
-    public void salvar(HorarioTrabalho horarioTrabalho){
-        ControlePontoHBDAO controlePonto = new ControlePontoHBDAO();
-        controlePonto.adiciona(horarioTrabalho);
+    public void salvarHorarioTrabalho(Marcacao horarioTrabalho){
+        controlePontoHBDAO.adicionaHorarioTrabalho(horarioTrabalho);
     }
+
+    public void salvarMarcacaoFeita(Marcacao marcacaoFeita){
+        controlePontoHBDAO.adicionaHorarioMarcacao(marcacaoFeita);
+    }
+
+    public void salvarHorarioTrabalhodo(Marcacao horarioTrabalhodo){
+        controlePontoHBDAO.adicionaHorarioTrabalhodo(horarioTrabalhodo);
+    }
+
+    public void salvarHorarioAtraso(Marcacao horarioAtraso){
+        controlePontoHBDAO.adicionaHorarioAtraso(horarioAtraso);
+    }
+
+    public void salvarHoraExtra(Marcacao horaExtra){
+        controlePontoHBDAO.adicionaHoraExtra(horaExtra);
+    }
+
+
 }

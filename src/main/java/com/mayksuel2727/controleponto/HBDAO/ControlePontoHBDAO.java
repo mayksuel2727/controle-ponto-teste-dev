@@ -1,7 +1,7 @@
 package com.mayksuel2727.controleponto.HBDAO;
 
 
-import com.mayksuel2727.controleponto.model.HorarioTrabalho;
+import com.mayksuel2727.controleponto.model.Marcacao;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,12 +12,16 @@ public class ControlePontoHBDAO implements Serializable{
 
     private static Long chaveSequencial = 1L;
 
-    private static List<HorarioTrabalho> listaHorarioTrabalhos = new ArrayList<>();
+    private static List<Marcacao> listaHorarioTrabalhos = new ArrayList<>();
+    private static List<Marcacao> listaHorarioMarcacaos = new ArrayList<>();
+    private static List<Marcacao> listaHorarioTrabalhodos = new ArrayList<>();
+    private static List<Marcacao> listaHorarioAtraso = new ArrayList<>();
+    private static List<Marcacao> listaHoraExtra = new ArrayList<>();
 
 
-    public void adiciona(HorarioTrabalho horarioTrabalho) {
+    public void adicionaHorarioTrabalho(Marcacao horarioTrabalho) {
 //        if(horarioTrabalho.getIdTurno()!=null){
-            horarioTrabalho.setIdTurno(chaveSequencial++);
+            horarioTrabalho.setId(chaveSequencial++);
             ControlePontoHBDAO.listaHorarioTrabalhos.add(horarioTrabalho);
 //        }else {
 //			for (HorarioTrabalho horarioTrabalhoLista : ControlePontoHBDAO.listaHorarioTrabalhos){
@@ -30,8 +34,44 @@ public class ControlePontoHBDAO implements Serializable{
 
     }
 
+    public void adicionaHorarioMarcacao(Marcacao horarioMarcacao) {
+        horarioMarcacao.setId(chaveSequencial++);
+        ControlePontoHBDAO.listaHorarioMarcacaos.add(horarioMarcacao);
+    }
 
-    public List<HorarioTrabalho> getListaHorarioTrablho() {
+    public void adicionaHorarioTrabalhodo(Marcacao horarioTrabalhodo) {
+        horarioTrabalhodo.setId(chaveSequencial++);
+        ControlePontoHBDAO.listaHorarioTrabalhodos.add(horarioTrabalhodo);
+    }
+
+    public void adicionaHorarioAtraso(Marcacao horarioAtraso) {
+        horarioAtraso.setId(chaveSequencial++);
+        ControlePontoHBDAO.listaHorarioAtraso.add(horarioAtraso);
+    }
+
+    public void adicionaHoraExtra(Marcacao horaExtra) {
+        horaExtra.setId(chaveSequencial++);
+        ControlePontoHBDAO.listaHoraExtra.add(horaExtra);
+    }
+
+
+    public List<Marcacao> getListaHorarioTrablho() {
         return ControlePontoHBDAO.listaHorarioTrabalhos;
+    }
+
+    public List<Marcacao> getListaHorarioMarcacao() {
+        return ControlePontoHBDAO.listaHorarioMarcacaos;
+    }
+
+    public List<Marcacao> getListaHorarioTrabalhodo() {
+        return ControlePontoHBDAO.listaHorarioTrabalhodos;
+    }
+
+    public List<Marcacao> getListaHorarioAtraso() {
+        return ControlePontoHBDAO.listaHorarioAtraso;
+    }
+
+    public List<Marcacao> getListaHoraExtra() {
+        return ControlePontoHBDAO.listaHoraExtra;
     }
 }
