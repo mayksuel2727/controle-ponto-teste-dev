@@ -107,6 +107,9 @@
                             </p:dataTable>
                         </p:panel>
                     </div>
+                    <div class="d-flex justify-content-center">
+                        <p:commandLink value="Limpar Dados das Marcações" styleClass="btn" action="#{ControlePontoMB.limparDadosMarcacoes()}" oncomplete="executarClockpickerScript();"/>
+                    </div>
                     <h2>Hora Extra</h2>
                     <p:panel styleClass="container py-4" style="width: 40%">
                         <p:dataTable value="#{ControlePontoMB.controlePontoHBDAO.listaHoraExtra}" var="listaHoraExtra">

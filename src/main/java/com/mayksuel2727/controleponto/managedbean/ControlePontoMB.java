@@ -49,6 +49,11 @@ public class ControlePontoMB implements Serializable {
         PrimeFaces.current().ajax().update("form-horario","form-marcacao");
     }
 
+    public void limparDadosMarcacoes(){
+        controlePontoBO.limparDadosMarcacoes();
+        PrimeFaces.current().ajax().update("form-marcacao");
+    }
+
     public void salvarMarcacaoFeita(){
         if (validar(marcacaoFeita, 2)){
             return;

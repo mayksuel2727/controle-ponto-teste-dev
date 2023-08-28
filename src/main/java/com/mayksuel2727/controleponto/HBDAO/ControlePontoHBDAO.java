@@ -72,4 +72,10 @@ public class ControlePontoHBDAO implements Serializable{
         ControlePontoHBDAO.listaHorarioAtraso.clear();
         ControlePontoHBDAO.listaHoraExtra.clear();
     }
+
+    public void limparDadosMarcacoes() {
+        ControlePontoHBDAO.listaHorarioMarcacaos.clear();
+        ControlePontoHBDAO.listaHorarioAtraso.clear();
+        ControlePontoHBDAO.listaHoraExtra.clear();
+    }
 }
