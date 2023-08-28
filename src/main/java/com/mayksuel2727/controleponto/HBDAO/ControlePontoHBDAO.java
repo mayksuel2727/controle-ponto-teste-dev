@@ -14,7 +14,6 @@ public class ControlePontoHBDAO implements Serializable{
 
     private static List<Marcacao> listaHorarioTrabalhos = new ArrayList<>();
     private static List<Marcacao> listaHorarioMarcacaos = new ArrayList<>();
-    private static List<Marcacao> listaHorarioTrabalhodos = new ArrayList<>();
     private static List<Marcacao> listaHorarioAtraso = new ArrayList<>();
     private static List<Marcacao> listaHoraExtra = new ArrayList<>();
 
@@ -39,10 +38,6 @@ public class ControlePontoHBDAO implements Serializable{
         ControlePontoHBDAO.listaHorarioMarcacaos.add(horarioMarcacao);
     }
 
-    public void adicionaHorarioTrabalhodo(Marcacao horarioTrabalhodo) {
-        horarioTrabalhodo.setId(chaveSequencial++);
-        ControlePontoHBDAO.listaHorarioTrabalhodos.add(horarioTrabalhodo);
-    }
 
     public void adicionaHorarioAtraso(Marcacao horarioAtraso) {
         horarioAtraso.setId(chaveSequencial++);
@@ -63,15 +58,18 @@ public class ControlePontoHBDAO implements Serializable{
         return ControlePontoHBDAO.listaHorarioMarcacaos;
     }
 
-    public List<Marcacao> getListaHorarioTrabalhodo() {
-        return ControlePontoHBDAO.listaHorarioTrabalhodos;
-    }
-
     public List<Marcacao> getListaHorarioAtraso() {
         return ControlePontoHBDAO.listaHorarioAtraso;
     }
 
     public List<Marcacao> getListaHoraExtra() {
         return ControlePontoHBDAO.listaHoraExtra;
+    }
+
+    public void limparDados() {
+        ControlePontoHBDAO.listaHorarioTrabalhos.clear();
+        ControlePontoHBDAO.listaHorarioMarcacaos.clear();
+        ControlePontoHBDAO.listaHorarioAtraso.clear();
+        ControlePontoHBDAO.listaHoraExtra.clear();
     }
 }

@@ -19,9 +19,6 @@ public class ControlePontoBO implements Serializable{
         controlePontoHBDAO.adicionaHorarioMarcacao(marcacaoFeita);
     }
 
-    public void salvarHorarioTrabalhodo(Marcacao horarioTrabalhodo){
-        controlePontoHBDAO.adicionaHorarioTrabalhodo(horarioTrabalhodo);
-    }
 
     public void salvarHorarioAtraso(Marcacao horarioAtraso){
         controlePontoHBDAO.adicionaHorarioAtraso(horarioAtraso);
@@ -32,4 +29,7 @@ public class ControlePontoBO implements Serializable{
     }
 
 
+    public void limparDados() {
+        controlePontoHBDAO.limparDados();
+    }
 }

@@ -7,12 +7,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
+import java.time.LocalTime;
 
 import com.mayksuel2727.controleponto.model.Marcacao;
 import org.primefaces.PrimeFaces;
 
 @ManagedBean(name = "ControlePontoMB")
-//@Named("ControlePontoMB")
 @ViewScoped
 public class ControlePontoMB implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -26,6 +26,11 @@ public class ControlePontoMB implements Serializable {
 
     private Marcacao marcacaoFeita;
 
+    private Marcacao horarioAtraso;
+
+    private Marcacao horaExtra;
+
+    private boolean isRegistroPonto = false;
 
 
     @PostConstruct
@@ -35,7 +40,13 @@ public class ControlePontoMB implements Serializable {
 		this.controlePontoBO = new ControlePontoBO();
         this.horarioTrabalho = new Marcacao();
         this.marcacaoFeita = new Marcacao();
+        this.horarioAtraso = new Marcacao();
+		this.horaExtra = new Marcacao();
+    }
 
+    public void limparDados(){
+        controlePontoBO.limparDados();
+        PrimeFaces.current().ajax().update("form-horario","form-marcacao");
     }
 
     public void salvarMarcacaoFeita(){
@@ -44,7 +55,8 @@ public class ControlePontoMB implements Serializable {
         }
         controlePontoBO.salvarMarcacaoFeita(marcacaoFeita);
         this.marcacaoFeita = new Marcacao();
-        PrimeFaces.current().ajax().update("form-marcacao-feita");
+        calcularAtrasoHoraExtra();
+        PrimeFaces.current().ajax().update("form-marcacao");
     }
 
     public void salvarHorarioDetrabalho(){
@@ -53,11 +65,45 @@ public class ControlePontoMB implements Serializable {
         }
         controlePontoBO.salvarHorarioTrabalho(horarioTrabalho);
         this.horarioTrabalho = new Marcacao();
-        PrimeFaces.current().ajax().update("form-horario-trabalho");
+        isRegistroPonto = true;
+        PrimeFaces.current().ajax().update("form-horario","form-marcacao");
+    }
+
+    public void calcularAtrasoHoraExtra(){
+        for (Marcacao horarioTrabalhoLista : controlePontoHBDAO.getListaHorarioTrablho()) {
+            for (Marcacao horarioMarcado :controlePontoHBDAO.getListaHorarioMarcacao()){
+                LocalTime entradaMarcada = LocalTime.parse(horarioMarcado.getEntrada());
+                LocalTime saidaMarcada = LocalTime.parse(horarioMarcado.getSaida());
+                LocalTime entrada = LocalTime.parse(horarioTrabalhoLista.getEntrada());
+                LocalTime saida = LocalTime.parse(horarioTrabalhoLista.getSaida());
+
+                if (entradaMarcada.isBefore(entrada)){
+                    horaExtra.setEntrada(entradaMarcada.toString());
+                    horaExtra.setSaida(entrada.toString());
+                    controlePontoHBDAO.adicionaHoraExtra(horaExtra);
+                }
+                if (saidaMarcada.isAfter(saida)){
+                    horaExtra.setEntrada(saida.toString());
+                    horaExtra.setSaida(saidaMarcada.toString());
+                    controlePontoHBDAO.adicionaHoraExtra(horaExtra);
+                }
+
+                if (entradaMarcada.isAfter(entrada)){
+                    horarioAtraso.setEntrada(entrada.toString());
+                    horarioAtraso.setSaida(entradaMarcada.toString());
+                    controlePontoHBDAO.adicionaHorarioAtraso(horarioAtraso);
+                }
+                if (saidaMarcada.isBefore(saida)){
+                    horarioAtraso.setEntrada(saidaMarcada.toString());
+                    horarioAtraso.setSaida(saida.toString());
+                    controlePontoHBDAO.adicionaHorarioAtraso(horarioAtraso);
+                }
+
+            }
+        }
     }
 
     public boolean validar(Marcacao macacao, int i){
-
         if (macacao.getEntrada().equals("") || macacao.getSaida().equals("")){
             PrimeFaces.current().executeScript("alert('Horário inválido')");
             return true;
@@ -70,31 +116,45 @@ public class ControlePontoMB implements Serializable {
         }else if (controlePontoHBDAO.getListaHorarioTrablho().size()>3){
             PrimeFaces.current().executeScript("alert('Número máximo de horários atingido')");
             return true;
-        }
-        else {
+        } else {
             if (i==1){
                 for (Marcacao horarioTrabalhoLista : controlePontoHBDAO.getListaHorarioTrablho()) {
-                    if (horarioTrabalhoLista.getEntrada().equals(macacao.getEntrada())) {
+                    LocalTime entradaMarcada = LocalTime.parse(macacao.getEntrada());
+                    LocalTime saidaMarcada = LocalTime.parse(macacao.getSaida());
+                    LocalTime entradaLista = LocalTime.parse(horarioTrabalhoLista.getEntrada());
+                    LocalTime saidaLista = LocalTime.parse(horarioTrabalhoLista.getSaida());
+                    if (entradaMarcada.equals(entradaLista)) {
                         PrimeFaces.current().executeScript("alert('Horário de entrada já cadastrado')");
                         return true;
-                    }else if (horarioTrabalhoLista.getSaida().equals(macacao.getSaida())) {
+                    }else if (saidaMarcada.equals(saidaLista)) {
                         PrimeFaces.current().executeScript("alert('Horário de saída já cadastrado')");
                         return true;
-                    }else if (horarioTrabalhoLista.getEntrada().compareTo(macacao.getEntrada()) < 0 || horarioTrabalhoLista.getSaida().compareTo(macacao.getSaida()) > 0) {
+                    }else if (!entradaMarcada.isAfter(saidaLista) || entradaMarcada.isBefore(entradaMarcada)){
+                        PrimeFaces.current().executeScript("alert('Intervalo de Horário já cadastrado')");
+                        return true;
+                    }else if (!saidaMarcada.isAfter(entradaLista)|| saidaMarcada.isBefore(saidaLista)){
                         PrimeFaces.current().executeScript("alert('Intervalo de Horário já cadastrado')");
                         return true;
                     }
                 }
             }else if (i==2){
+
                 for (Marcacao horarioTrabalhoLista : controlePontoHBDAO.getListaHorarioMarcacao()) {
-                    if (horarioTrabalhoLista.getEntrada().equals(macacao.getEntrada())) {
-                        PrimeFaces.current().executeScript("alert('Horário de entrada já cadastrado')");
+                    LocalTime entradaMarcada = LocalTime.parse(macacao.getEntrada());
+                    LocalTime saidaMarcada = LocalTime.parse(macacao.getSaida());
+                    LocalTime entradaLista = LocalTime.parse(horarioTrabalhoLista.getEntrada());
+                    LocalTime saidaLista = LocalTime.parse(horarioTrabalhoLista.getSaida());
+                    if (entradaMarcada.equals(entradaLista)) {
+                        PrimeFaces.current().executeScript("alert('Horário de Marcação já cadastrado')");
                         return true;
-                    }else if (horarioTrabalhoLista.getSaida().equals(macacao.getSaida())) {
-                        PrimeFaces.current().executeScript("alert('Horário de saída já cadastrado')");
+                    }else if (saidaMarcada.equals(saidaLista)) {
+                        PrimeFaces.current().executeScript("alert('Horário de Marcação já cadastrado')");
                         return true;
-                    }else if (horarioTrabalhoLista.getEntrada().compareTo(macacao.getEntrada()) < 0 || horarioTrabalhoLista.getSaida().compareTo(macacao.getSaida()) > 0) {
-                        PrimeFaces.current().executeScript("alert('Intervalo de Horário já cadastrado')");
+                    }else if (!entradaMarcada.isAfter(saidaLista)){
+                        PrimeFaces.current().executeScript("alert('Intervalo de Marcação já cadastrado')");
+                        return true;
+                    }else if (!saidaMarcada.isBefore(entradaLista)){
+                        PrimeFaces.current().executeScript("alert('Intervalo de Marcação já cadastrado')");
                         return true;
                     }
                 }
@@ -129,5 +189,11 @@ public class ControlePontoMB implements Serializable {
         this.marcacaoFeita = marcacaoFeita;
     }
 
+    public boolean isRegistroPonto() {
+        return isRegistroPonto;
+    }
 
+    public void setRegistroPonto(boolean registroPonto) {
+        isRegistroPonto = registroPonto;
+    }
 }

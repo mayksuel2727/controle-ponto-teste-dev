@@ -15,7 +15,7 @@
 </h:head>
 <h:body styleClass="m-2">
 
-    <h:form id="form-horario-trabalho">
+    <h:form id="form-horario">
         <div class="d-flex justify-content-center align-items-center flex-column mb-3">
             <h1>Horário de Trabalho</h1>
             <div class="d-flex justify-content-center align-items-center flex-row">
@@ -53,49 +53,86 @@
                     </p:dataTable>
                 </p:panel>
             </div>
-        </div>
-    </h:form>
-
-    <h:form id="form-marcacao">
-        <div class="d-flex justify-content-center align-items-center flex-column mb-3">
-            <h1>Marcações</h1>
-            <div class="d-flex justify-content-center align-items-center flex-row">
-                <p:panel styleClass="container w-auto mt-2">
-                    <div class="row justify-content-center py-2 ">
-                        <div class="col-12 col-md-3 mb-3">
-                            <h:outputLabel for="entrada-marcacao" value="Entrada:" />
-                            <div class="ui-inputgroup clockpicker" data-placement="left" data-align="top" data-autoclose="true">
-                                <form>
-                                    <p:inputMask  maxlength="5" id="entrada-marcacao" type="text" styleClass="form-control w-100" value="#{ControlePontoMB.marcacaoFeita.entrada}" mask="99:99"/>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-3 mb-3">
-                            <h:outputLabel for="saida-marcacao" value="Saída:" />
-                            <div class="ui-inputgroup clockpicker" data-placement="right" data-align="top" data-autoclose="true">
-                                <p:inputMask maxlength="5" id="saida-marcacao" type="text" class="form-control w-100" value="#{ControlePontoMB.marcacaoFeita.saida}" mask="99:99" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-center">
-                        <p:commandButton value="Cadastrar" styleClass="justify-content-center" action="#{ControlePontoMB.salvarMarcacaoFeita()}" oncomplete="executarClockpickerScript();"/>
-                    </div>
-                </p:panel>
-                <p:panel styleClass="container py-4" style="width: 40%">
-                    <p:dataTable value="#{ControlePontoMB.controlePontoHBDAO.listaHorarioMarcacao}" var="listaHorarioMarcacao">
-                        <p:column headerText="Entrada" styleClass="col-12 col-md-3 mb-3 w-50">
-                            <h:outputText value="#{listaHorarioMarcacao.entrada}"/>
-                        </p:column>
-                        <p:column headerText="Saída" styleClass="col-12 col-md-3 mb-3 w-50">
-                            <h:outputText value="#{listaHorarioMarcacao.saida}"/>
-                        </p:column>
-                    </p:dataTable>
-                </p:panel>
+            <div class="d-flex justify-content-center">
+                <p:commandLink value="Limpar Dados" styleClass="btn" action="#{ControlePontoMB.limparDados()}" oncomplete="executarClockpickerScript();"/>
             </div>
         </div>
     </h:form>
+
+    <p:outputPanel id="form-marcacao">
+            <h:form id="form-marcacao-ponto" rendered="#{not empty ControlePontoMB.controlePontoHBDAO.listaHorarioTrablho}">
+                <div class="d-flex justify-content-center align-items-center flex-column mb-3">
+                    <h1>Marcações</h1>
+                    <div class="d-flex justify-content-center align-items-center flex-row">
+                        <p:panel styleClass="container w-auto mt-2">
+                            <div class="row justify-content-center py-2 ">
+                                <div class="col-12 col-md-3 mb-3">
+                                    <h:outputLabel for="entrada-marcacao" value="Entrada:"/>
+                                    <div class="ui-inputgroup clockpicker" data-placement="left" data-align="top"
+                                         data-autoclose="true">
+                                        <form>
+                                            <p:inputMask maxlength="5" id="entrada-marcacao" type="text"
+                                                         styleClass="form-control w-100"
+                                                         value="#{ControlePontoMB.marcacaoFeita.entrada}" mask="99:99"/>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-3 mb-3">
+                                    <h:outputLabel for="saida-marcacao" value="Saída:"/>
+                                    <div class="ui-inputgroup clockpicker" data-placement="right" data-align="top"
+                                         data-autoclose="true">
+                                        <p:inputMask maxlength="5" id="saida-marcacao" type="text"
+                                                     class="form-control w-100"
+                                                     value="#{ControlePontoMB.marcacaoFeita.saida}" mask="99:99"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <p:commandButton value="Cadastrar" styleClass="justify-content-center"
+                                                 action="#{ControlePontoMB.salvarMarcacaoFeita()}"
+                                                 oncomplete="executarClockpickerScript();"/>
+                            </div>
+                        </p:panel>
+                        <p:panel styleClass="container py-4" style="width: 40%">
+                            <p:dataTable value="#{ControlePontoMB.controlePontoHBDAO.listaHorarioMarcacao}"
+                                         var="listaHorarioMarcacao">
+                                <p:column headerText="Entrada" styleClass="col-12 col-md-3 mb-3 w-50">
+                                    <h:outputText value="#{listaHorarioMarcacao.entrada}"/>
+                                </p:column>
+                                <p:column headerText="Saída" styleClass="col-12 col-md-3 mb-3 w-50">
+                                    <h:outputText value="#{listaHorarioMarcacao.saida}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </div>
+                    <h2>Hora Extra</h2>
+                    <p:panel styleClass="container py-4" style="width: 40%">
+                        <p:dataTable value="#{ControlePontoMB.controlePontoHBDAO.listaHoraExtra}" var="listaHoraExtra">
+                            <p:column headerText="Entrada" styleClass="col-12 col-md-3 mb-3 w-50">
+                                <h:outputText value="#{listaHoraExtra.entrada}"/>
+                            </p:column>
+                            <p:column headerText="Saída" styleClass="col-12 col-md-3 mb-3 w-50">
+                                <h:outputText value="#{listaHoraExtra.saida}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <h2>Atrasos</h2>
+                    <p:panel styleClass="container py-4" style="width: 40%">
+                        <p:dataTable value="#{ControlePontoMB.controlePontoHBDAO.listaHorarioAtraso}"
+                                     var="listaHorarioAtraso">
+                            <p:column headerText="Entrada" styleClass="col-12 col-md-3 mb-3 w-50">
+                                <h:outputText value="#{listaHorarioAtraso.entrada}"/>
+                            </p:column>
+                            <p:column headerText="Saída" styleClass="col-12 col-md-3 mb-3 w-50">
+                                <h:outputText value="#{listaHorarioAtraso.saida}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </div>
+            </h:form>
+    </p:outputPanel>
     <script src="resources/js/bootstrap.min.js"></script>
     <script src="resources/js/clockpicker.js"></script>
 	<script src="resources/js/js.js"></script>
